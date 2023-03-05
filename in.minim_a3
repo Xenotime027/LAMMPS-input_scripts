@@ -1,0 +1,67 @@
+log				log.minim_$j_a
+units				metal
+atom_style			atomic
+boundary			p p p
+read_data			./lmp.HEA_6_a
+pair_style			meam
+pair_coeff			* * /nfshome/sulaiman/LAMMPS/Masterarbeit/Potenzial/CoNiCrFeMn_library.meam Co Ni Cr Fe Mn &        
+				/nfshome/sulaiman/LAMMPS/Masterarbeit/Potenzial/CoNiCrFeMn.meam Ni Fe Co Cr Mn
+
+variable        		el1 atom type==1
+variable        		el2 atom type==2
+variable        		el3 atom type==3
+variable        		el4 atom type==4
+variable        		el5 atom type==5
+
+group           		gNi variable el1
+group           		gFe variable el2
+group           		gCo variable el3
+group           		gCr variable el4
+group           		gMn variable el5
+
+compute         		epot all pe/atom
+compute        		epNi gNi reduce ave c_epot
+compute         		epFe gFe reduce ave c_epot
+compute         		epCo gCo reduce ave c_epot
+compute         		epCr gCr reduce ave c_epot
+compute        		epMn gMn reduce ave c_epot
+
+compute         		ekin all ke/atom
+compute        		ekNi gNi reduce ave c_ekin
+compute         		ekFe gFe reduce ave c_ekin
+compute         		ekCo gCo reduce ave c_ekin
+compute         		ekCr gCr reduce ave c_ekin
+compute        		ekMn gMn reduce ave c_ekin
+
+thermo				100
+thermo_style		        custom step temp press pxx pyy pzz pxy pxz pyz vol etotal lx ly lz fmax &
+				c_epNi c_ekNi c_epFe c_ekFe c_epCo c_ekCo c_epCr c_ekCr c_epMn c_ekMn 
+thermo_modify			flush yes
+
+variable			T equal $x*1040
+variable 			Ta equal $T+100
+
+dump				1 all custom 100 lammpstrj.minim_$j_a id type x y z
+velocity                       all create ${Ta} 33333 mom yes rot yes dist gaussian
+
+fix 				1 all nvt temp ${Ta} $T 0.1
+fix                 		2 all momentum 100 linear 1 1 1 angular
+run				10000
+unfix				2
+unfix				1
+
+fix				1 all nvt temp $T $T 0.1
+fix                 		2 all momentum 100 linear 1 1 1 angular
+run				10000
+unfix				2
+unfix				1
+
+write_restart			rest.equil_$j_a
+
+fix				1 all nvt temp $T $T 0.1
+run				50000
+unfix				1
+
+write_data			data.minim_$j_a
+write_restart			rest.finish_$j_a
+undump				1
