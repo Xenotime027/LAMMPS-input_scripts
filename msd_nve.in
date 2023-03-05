@@ -49,4 +49,4 @@ run				1000000
 unfix				1
 
 write_restart			rest.final_$j
-undump              		1
+undump              		1 
