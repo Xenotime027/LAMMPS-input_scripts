@@ -1,3 +1,6 @@
+#LAMMPS input script to calculate mean square displacement (quantify diffusion of atoms) 
+#by first heating it with NVT to melting point and then simulate under NVE ensemble.
+
 log				log.emesde_$j
 units				metal
 atom_style			atomic
