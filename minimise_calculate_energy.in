@@ -1,11 +1,15 @@
+#This input script calculates the average potential and kinetic energies of a heated structure file.
+#It is used to compare the difference in energy between a crystallised and an amoprhous nanoparticle
+#with the same composition (same number of atoms of each element type) and performed at the same temperature.
+
 log				log.minim_$j_a
 units				metal
 atom_style			atomic
 boundary			p p p
 read_data			./lmp.HEA_6_a
 pair_style			meam
-pair_coeff			* * /nfshome/sulaiman/LAMMPS/Masterarbeit/Potenzial/CoNiCrFeMn_library.meam Co Ni Cr Fe Mn &        
-				/nfshome/sulaiman/LAMMPS/Masterarbeit/Potenzial/CoNiCrFeMn.meam Ni Fe Co Cr Mn
+pair_coeff			* * /LAMMPS/Potenzial/CoNiCrFeMn_library.meam Co Ni Cr Fe Mn &        
+				/LAMMPS/Potenzial/CoNiCrFeMn.meam Ni Fe Co Cr Mn
 
 variable        		el1 atom type==1
 variable        		el2 atom type==2
@@ -20,18 +24,18 @@ group           		gCr variable el4
 group           		gMn variable el5
 
 compute         		epot all pe/atom
-compute        		epNi gNi reduce ave c_epot
+compute        			epNi gNi reduce ave c_epot
 compute         		epFe gFe reduce ave c_epot
 compute         		epCo gCo reduce ave c_epot
 compute         		epCr gCr reduce ave c_epot
-compute        		epMn gMn reduce ave c_epot
+compute        			epMn gMn reduce ave c_epot
 
 compute         		ekin all ke/atom
-compute        		ekNi gNi reduce ave c_ekin
+compute        			ekNi gNi reduce ave c_ekin
 compute         		ekFe gFe reduce ave c_ekin
 compute         		ekCo gCo reduce ave c_ekin
 compute         		ekCr gCr reduce ave c_ekin
-compute        		ekMn gMn reduce ave c_ekin
+compute        			ekMn gMn reduce ave c_ekin
 
 thermo				100
 thermo_style		        custom step temp press pxx pyy pzz pxy pxz pyz vol etotal lx ly lz fmax &
@@ -42,7 +46,7 @@ variable			T equal $x*1040
 variable 			Ta equal $T+100
 
 dump				1 all custom 100 lammpstrj.minim_$j_a id type x y z
-velocity                       all create ${Ta} 33333 mom yes rot yes dist gaussian
+velocity			all create ${Ta} 33333 mom yes rot yes dist gaussian
 
 fix 				1 all nvt temp ${Ta} $T 0.1
 fix                 		2 all momentum 100 linear 1 1 1 angular
