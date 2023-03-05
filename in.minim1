@@ -1,0 +1,31 @@
+log				log.minim_$j
+units				metal
+atom_style			atomic
+boundary			p p p
+read_data			/nfshome/sulaiman/LAMMPS/Masterarbeit/Verzerrungsenergie/1/lmp.HEA_$j
+pair_style			meam
+pair_coeff			* * /nfshome/sulaiman/LAMMPS/Masterarbeit/Potenzial/CoNiCrFeMn_library.meam Co Ni Cr Fe Mn &    
+				/nfshome/sulaiman/LAMMPS/Masterarbeit/Potenzial/CoNiCrFeMn.meam Ni Fe Co Cr Mn
+
+thermo				100
+thermo_style		        custom step temp press pxx pyy pzz pxy pxz pyz vol etotal lx ly lz fmax        
+thermo_modify			flush yes 
+
+dump				1 all custom 100 lammpstrj.minim_$j id type x y z
+minimize			0.0 1.0e-6 1000 10000
+minimize			0.0 1.0e-6 1000 10000
+minimize			0.0 1.0e-6 1000 10000
+minimize			0.0 1.0e-6 1000 10000
+minimize			0.0 1.0e-6 1000 10000
+
+fix 				1 all nvt temp 0 1400 0.1
+run				1400000
+unfix				1
+
+
+fix				1 all nvt temp 1400 300 0.1
+run				1100000
+unfix				1
+
+write_data			data.minim_$j
+undump				1
