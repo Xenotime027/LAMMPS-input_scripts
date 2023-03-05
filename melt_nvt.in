@@ -1,11 +1,14 @@
+#This script minimises the given structure data and performs heating to a certain temperature
+#and cooling it down to room temperature. It is used to observe the melting and crystallisation behaviour.
+
 log				log.minim_$j
 units				metal
 atom_style			atomic
 boundary			p p p
-read_data			/nfshome/sulaiman/LAMMPS/Masterarbeit/Verzerrungsenergie/1/lmp.HEA_$j
+read_data			/LAMMPS/lmp.HEA_$j
 pair_style			meam
-pair_coeff			* * /nfshome/sulaiman/LAMMPS/Masterarbeit/Potenzial/CoNiCrFeMn_library.meam Co Ni Cr Fe Mn &    
-				/nfshome/sulaiman/LAMMPS/Masterarbeit/Potenzial/CoNiCrFeMn.meam Ni Fe Co Cr Mn
+pair_coeff			* * /LAMMPS/Potenzial/CoNiCrFeMn_library.meam Co Ni Cr Fe Mn &    
+				/LAMMPS/Potenzial/CoNiCrFeMn.meam Ni Fe Co Cr Mn
 
 thermo				100
 thermo_style		        custom step temp press pxx pyy pzz pxy pxz pyz vol etotal lx ly lz fmax        
